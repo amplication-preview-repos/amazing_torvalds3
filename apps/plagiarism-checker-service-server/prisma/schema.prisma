@@ -1,0 +1,40 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Document {
+  author            String?
+  content           String?
+  createdAt         DateTime           @default(now())
+  id                String             @id @default(cuid())
+  plagiarismReports PlagiarismReport[]
+  title             String?
+  updatedAt         DateTime           @updatedAt
+}
+
+model PlagiarismReport {
+  createdAt  DateTime  @default(now())
+  details    String?
+  document   Document? @relation(fields: [documentId], references: [id])
+  documentId String?
+  id         String    @id @default(cuid())
+  score      Int?
+  updatedAt  DateTime  @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
